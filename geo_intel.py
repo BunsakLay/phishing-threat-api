@@ -4,10 +4,6 @@ import requests
 
 
 def get_network_intelligence(url: str) -> dict:
-    """
-    Resolves live DNS IP and Geolocation metadata (5 network parameters)
-    for any submitted URL string.
-    """
     raw_url = str(url).strip()
     parse_target = raw_url if "://" in raw_url else f"http://{raw_url}"
 

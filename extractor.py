@@ -45,7 +45,6 @@ def extract_features(url: str) -> list:
     url = str(url).strip()
     url_lower = url.lower()
 
-    # Ensure urlsplit parses domain/path accurately even if scheme is omitted in dataset
     parse_target = url if "://" in url else f"http://{url}"
     try:
         parsed = urlsplit(parse_target)
@@ -59,7 +58,6 @@ def extract_features(url: str) -> list:
     except ValueError:
         hostname, path, query, port = "", url, "", None
 
-    # Category A: Length & Ratio Metrics (6)
     url_length = len(url)
     hostname_length = len(hostname)
     path_length = len(path)
@@ -70,7 +68,6 @@ def extract_features(url: str) -> list:
     digit_to_length_ratio = round(digit_count / url_length, 6) if url_length > 0 else 0.0
     hostname_to_url_ratio = round(hostname_length / url_length, 6) if url_length > 0 else 0.0
 
-    # Category B: Delimiter & Obfuscation Counts (8)
     num_dots = url.count(".")
     num_hyphens = url.count("-")
     num_underscores = url.count("_")
@@ -80,7 +77,6 @@ def extract_features(url: str) -> list:
     num_at_symbols = url.count("@")
     num_percent_encodings = url.count("%")
 
-    # Category C: Domain, Protocol & Structural Flags (6)
     has_https = 1 if url_lower.startswith("https://") else 0
     has_ip_address = 1 if (IPV4_PATTERN.match(hostname) or ":" in hostname) else 0
 
@@ -93,7 +89,6 @@ def extract_features(url: str) -> list:
     tld = host_parts[-1] if len(host_parts) >= 2 and not has_ip_address else ""
     is_suspicious_tld = 1 if tld in SUSPICIOUS_TLDS else 0
 
-    # Category D: Character Composition, Entropy & Keyword Signals (4)
     suspicious_keyword_count = sum(url_lower.count(kw) for kw in SUSPICIOUS_KEYWORDS)
     url_entropy = calculate_entropy(url)
 
